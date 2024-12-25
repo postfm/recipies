@@ -56,14 +56,14 @@ interface meal {
   dateModified: null;
 }
 
-interface MealState {
+interface MealsState {
   meals: meal[];
   addMeal: (meal: meal) => void;
   removeMeal: (id: number) => void;
-  removeAllMeals: (meals: MealState) => void;
+  removeAllMeals: (meals: MealsState) => void;
 }
 
-const useStore = create<MealState>((set) => ({
+const useStore = create<MealsState>((set) => ({
   meals: [],
 
   addMeal: (meal) =>
