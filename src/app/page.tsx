@@ -7,6 +7,8 @@ import { HeartFilled } from '@ant-design/icons';
 import { Button, ConfigProvider, Input, Typography } from 'antd';
 import Image from 'next/image';
 import { Fragment } from 'react';
+import { meals } from '../../mocks/mock-data-meals.json';
+import '@ant-design/v5-patch-for-react-19';
 
 const { Title, Text } = Typography;
 
@@ -28,6 +30,10 @@ const GlobalToken = {
   colorPrimaryHover: '#d57d1f',
   colorPrimaryTextHover: '#d57d1f',
 };
+
+const data = meals;
+
+console.log(data);
 
 export default function Home() {
   return (
