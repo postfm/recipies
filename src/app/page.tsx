@@ -139,13 +139,12 @@ export default function Home() {
           </div>
           <div className='w-[1170px] px-[15px] mx-auto'>
             <div className='grid grid-rows-2 grid-cols-4 place-content-center gap-[30px]'>
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
+              {meals.map((meal) => (
+                <RecipeCard
+                  key={meal.idMeal}
+                  meal={meal}
+                />
+              ))}
             </div>
             <Image
               src='/separator.jpg'
