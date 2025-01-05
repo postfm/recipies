@@ -63,7 +63,7 @@ interface MealsState {
   removeAllMeals: (meals: MealsState) => void;
 }
 
-const useStore = create<MealsState>((set) => ({
+const useMealsStore = create<MealsState>((set) => ({
   meals: [],
 
   addMeal: (meal) =>
@@ -80,6 +80,10 @@ const useStore = create<MealsState>((set) => ({
     set(() => ({
       meals: [],
     })),
+
+  fetchMeals: (data) => {
+    set({ meals: data });
+  },
 }));
 
-export default useStore;
+export default useMealsStore;

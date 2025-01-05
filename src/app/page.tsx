@@ -6,9 +6,10 @@ import { StyleProvider } from '@ant-design/cssinjs';
 import { HeartFilled } from '@ant-design/icons';
 import { Button, ConfigProvider, Input, Typography } from 'antd';
 import Image from 'next/image';
-import { Fragment } from 'react';
-import { meals } from '../../mocks/mock-data-meals.json';
+import { Fragment, useEffect } from 'react';
+import { mockMeals } from '../../mocks/mock-data-meals.json';
 import '@ant-design/v5-patch-for-react-19';
+import useMealsStore from '../store/meals-store';
 
 const { Title, Text } = Typography;
 
@@ -31,11 +32,15 @@ const GlobalToken = {
   colorPrimaryTextHover: '#d57d1f',
 };
 
-const data = meals;
-
-console.log(data);
-
 export default function Home() {
+  const meals = useMealsStore((state) => state.meals);
+  const fetchMeals = useMealsStore((state) => state.fetchMeals);
+
+  useEffect(() => {
+    fetchMeals(mockMeals);
+  }, [fetchMeals]);
+
+  console.log(meals);
   return (
     <StyleProvider layer>
       <div className='grid grid-rows-[75.2px_1fr_100px] items-center justify-items-center min-h-screen gap-16'>
