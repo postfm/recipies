@@ -5,6 +5,7 @@ import { CloseOutlined, HeartOutlined, HeartFilled } from '@ant-design/icons';
 import { Button, Card, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import { Meal } from '../helpers/interface';
+import useMealsStore from '@/store/meals-store';
 
 const GlobalToken = {
   paddingLG: 16,
@@ -13,10 +14,22 @@ const GlobalToken = {
 
 interface RecipeCardInterface {
   meal: Meal;
-  clickFavoriteButtonHandler: (evt: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
-export default function RecipeCard({ meal, clickFavoriteButtonHandler }: RecipeCardInterface) {
+export default function RecipeCard({ meal }: RecipeCardInterface) {
+  const meals = useMealsStore((state) => state.meals);
+  const setFavoriteMeal = useMealsStore((state) => state.setFavoriteMeal);
+  const removeMeal = useMealsStore((state) => state.removeMeal);
+
+  function clickFavoriteButtonHandler() {
+    meals.filter((item) => item.idMeal === meal.idMeal)[0].isFavorite = !meal.isFavorite;
+    setFavoriteMeal(meal);
+  }
+
+  function clickCloseButtonHandler() {
+    removeMeal(meal.idMeal);
+  }
+
   return (
     <StyleProvider layer>
       <ConfigProvider
@@ -56,7 +69,7 @@ export default function RecipeCard({ meal, clickFavoriteButtonHandler }: RecipeC
                   key={'close'}
                 />
               }
-              onClick={() => alert(`Recipe ${meal.idMeal} remove`)}
+              onClick={clickCloseButtonHandler}
             />
           }
           cover={

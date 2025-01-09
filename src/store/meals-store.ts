@@ -5,7 +5,7 @@ import { faker } from '@faker-js/faker';
 interface MealsState {
   meals: Meal[];
   addMeal: (meal: Meal) => void;
-  setFavoriteMeal: (id: string, isFavorite: boolean) => void;
+  setFavoriteMeal: (meal: Meal) => void;
   removeMeal: (id: string) => void;
   removeAllMeals: (meals: MealsState) => void;
   fetchMeals: (data: Meal[]) => void;
@@ -19,9 +19,9 @@ const useMealsStore = create<MealsState>((set) => ({
       meals: [meal, ...state.meals],
     })),
 
-  setFavoriteMeal: (id, isFavorite) =>
+  setFavoriteMeal: (meal) =>
     set((state) => ({
-      meals: (state.meals.filter((meal) => meal.idMeal === id)[0].isFavorite = isFavorite),
+      meals: state.meals.map((item) => (item.idMeal === meal.idMeal ? meal : item)),
     })),
 
   removeMeal: (id) =>

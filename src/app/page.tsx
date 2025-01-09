@@ -3,10 +3,10 @@
 import RecipeCard from '@/components/recipe-card';
 import { Flags, Letters } from '@/helpers';
 import { StyleProvider } from '@ant-design/cssinjs';
-import { HeartFilled } from '@ant-design/icons';
+import { HeartFilled, HeartTwoTone } from '@ant-design/icons';
 import { Button, ConfigProvider, Input, Typography } from 'antd';
 import Image from 'next/image';
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { mockMeals } from '../../mocks/mock-data-meals.json';
 import '@ant-design/v5-patch-for-react-19';
 import useMealsStore from '../store/meals-store';
@@ -36,12 +36,14 @@ export default function Home() {
   const meals = useMealsStore((state) => state.meals);
   const fetchMeals = useMealsStore((state) => state.fetchMeals);
 
+  const [isFavoriteFiltered, setIsFavoriteFiltered] = useState(false);
+
   useEffect(() => {
     return fetchMeals(mockMeals);
   }, [fetchMeals]);
 
-  function clickFavoriteButtonHandler(evt: React.MouseEvent<HTMLElement, MouseEvent>) {
-    alert(`Recipe ${evt.currentTarget.closest} add/remove favorite`);
+  function clickFavoriteFilterButtonHandler() {
+    setIsFavoriteFiltered(!isFavoriteFiltered);
   }
 
   return (
@@ -141,14 +143,22 @@ export default function Home() {
             />
           </div>
           <div className='w-[1170px] px-[15px] mx-auto'>
-            <div className='grid grid-rows-2 grid-cols-4 place-content-center gap-[30px]'>
-              {meals.map((meal) => (
-                <RecipeCard
-                  key={meal.idMeal}
-                  meal={meal}
-                  clickFavoriteButtonHandler={clickFavoriteButtonHandler}
-                />
-              ))}
+            <div className='grid grid-cols-4 place-content-center gap-[30px]'>
+              {isFavoriteFiltered
+                ? meals
+                    .filter((meal) => meal.isFavorite === true)
+                    .map((meal) => (
+                      <RecipeCard
+                        key={meal.idMeal}
+                        meal={meal}
+                      />
+                    ))
+                : meals.map((meal) => (
+                    <RecipeCard
+                      key={meal.idMeal}
+                      meal={meal}
+                    />
+                  ))}
             </div>
             <Image
               src='/separator.jpg'
@@ -168,11 +178,20 @@ export default function Home() {
               className='bg-transparent border-none'
               shape='circle'
               icon={
-                <HeartFilled
-                  className='text-[#d57d1f] hover:text-[#FFAB50] text-3xl hover:cursor-pointer'
-                  key={'favorite'}
-                />
+                isFavoriteFiltered ? (
+                  <HeartTwoTone
+                    className='hover:text-[#FFAB50] text-3xl hover:cursor-pointer'
+                    key={'favorite'}
+                    twoToneColor='#d57d1f'
+                  />
+                ) : (
+                  <HeartFilled
+                    className='text-[#d57d1f] hover:text-[#FFAB50] text-3xl hover:cursor-pointer'
+                    key={'favorite'}
+                  />
+                )
               }
+              onClick={clickFavoriteFilterButtonHandler}
             />
           </div>
           <div className='w-[1170px] px-[15px] mx-auto text-center'>
