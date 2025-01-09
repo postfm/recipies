@@ -13,7 +13,7 @@ const GlobalToken = {
 
 interface RecipeCardInterface {
   meal: Meal;
-  clickFavoriteButtonHandler: (evt) => void;
+  clickFavoriteButtonHandler: (evt: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
 export default function RecipeCard({ meal, clickFavoriteButtonHandler }: RecipeCardInterface) {
