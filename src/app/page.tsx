@@ -37,10 +37,13 @@ export default function Home() {
   const fetchMeals = useMealsStore((state) => state.fetchMeals);
 
   useEffect(() => {
-    fetchMeals(mockMeals);
+    return fetchMeals(mockMeals);
   }, [fetchMeals]);
 
-  console.log(meals);
+  function clickFavoriteButtonHandler(evt: React.MouseEvent<HTMLElement, MouseEvent>) {
+    alert(`Recipe ${evt.currentTarget.closest} add/remove favorite`);
+  }
+
   return (
     <StyleProvider layer>
       <div className='grid grid-rows-[75.2px_1fr_100px] items-center justify-items-center min-h-screen gap-16'>
@@ -143,6 +146,7 @@ export default function Home() {
                 <RecipeCard
                   key={meal.idMeal}
                   meal={meal}
+                  clickFavoriteButtonHandler={clickFavoriteButtonHandler}
                 />
               ))}
             </div>

@@ -1,12 +1,12 @@
 export interface Meal {
-  idMeal: number;
+  idMeal: string;
   strMeal: string;
-  strDrinkAlternate: null;
+  strDrinkAlternate: string | null;
   strCategory: string;
   strArea: string;
   strInstructions: string;
   strMealThumb: string;
-  strTags: string;
+  strTags: string | null;
   strYoutube: string;
   strIngredient1: string;
   strIngredient2: string;
@@ -49,8 +49,8 @@ export interface Meal {
   strMeasure19: string;
   strMeasure20: string;
   strSource: string;
-  strImageSource: null;
-  strCreativeCommonsConfirmed: null;
-  dateModified: null;
-  isFavorite: boolean;
+  strImageSource: string | null;
+  strCreativeCommonsConfirmed: string | null;
+  dateModified: string | null;
+  isFavorite?: boolean;
 }
