@@ -1,10 +1,10 @@
 'use client';
 
 import RecipeCard from '@/components/recipe-card';
-import { Flags, Letters } from '@/helpers';
+import { Flags, Letters, Meal } from '@/helpers';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { HeartFilled, HeartTwoTone } from '@ant-design/icons';
-import { Button, ConfigProvider, Input, Typography } from 'antd';
+import { Button, ConfigProvider, Input, Pagination, Typography } from 'antd';
 import Image from 'next/image';
 import { Fragment, useEffect, useState } from 'react';
 import { mockMeals } from '../../mocks/mock-data-meals.json';
@@ -25,25 +25,46 @@ const ButtonToken = {
   defaultHoverColor: '#d57d1f',
 };
 
+const PaginationToken = {
+  itemActiveBg: '#FFAB50',
+  itemBg: '#d57d1f',
+  itemActive: '#FFAB50',
+};
+
 const GlobalToken = {
   colorPrimaryActive: '#2d2013',
-  colorPrimaryTextActive: '#2d2013',
+  colorPrimaryTextActive: '#ffffff',
   colorPrimaryHover: '#d57d1f',
-  colorPrimaryTextHover: '#d57d1f',
+  colorText: '#ffffff',
+  colorPrimary: '#2d2013',
+  colorBgTextActive: '#FFAB50',
+  colorTextDisabled: '#d57d1f',
 };
+
+const CurrentPage = 1;
+const ItemsPerPage = 8;
 
 export default function Home() {
   const meals = useMealsStore((state) => state.meals);
   const fetchMeals = useMealsStore((state) => state.fetchMeals);
 
-  const [isFavoriteFiltered, setIsFavoriteFiltered] = useState(false);
-
   useEffect(() => {
     return fetchMeals(mockMeals);
   }, [fetchMeals]);
 
+  const mealsSlice = meals.slice((CurrentPage - 1) * ItemsPerPage, CurrentPage * ItemsPerPage);
+
+  const [isFavoriteFiltered, setIsFavoriteFiltered] = useState(false);
+  const [currentItemsOnPage, setCurrentItemsOnPage] = useState<Meal[]>(mealsSlice);
+
   function clickFavoriteFilterButtonHandler() {
     setIsFavoriteFiltered(!isFavoriteFiltered);
+  }
+
+  function onChangePageHandler(currentPage: number) {
+    setCurrentItemsOnPage(
+      meals.slice((currentPage - 1) * ItemsPerPage, currentPage * ItemsPerPage)
+    );
   }
 
   return (
@@ -153,13 +174,30 @@ export default function Home() {
                         meal={meal}
                       />
                     ))
-                : meals.map((meal) => (
+                : currentItemsOnPage.map((meal) => (
                     <RecipeCard
                       key={meal.idMeal}
                       meal={meal}
                     />
                   ))}
             </div>
+            <ConfigProvider
+              theme={{
+                token: GlobalToken,
+                components: { Pagination: PaginationToken },
+              }}
+            >
+              <Pagination
+                className='mb-6'
+                align='center'
+                defaultCurrent={1}
+                total={meals.length}
+                pageSize={ItemsPerPage}
+                showSizeChanger={false}
+                showTitle={false}
+                onChange={(currentPage) => onChangePageHandler(currentPage)}
+              />
+            </ConfigProvider>
             <Image
               src='/separator.jpg'
               alt='Separator'

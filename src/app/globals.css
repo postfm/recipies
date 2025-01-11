@@ -3,6 +3,7 @@
 @layer tailwind-base {
   @tailwind base;
 }
+
 @tailwind components;
 @tailwind utilities;
 
@@ -13,8 +14,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #2d2013;
+    --foreground: #d57d1f;
   }
 }
 
