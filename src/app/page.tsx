@@ -1,7 +1,17 @@
 'use client';
 
 import RecipeCard from '@/components/recipe-card';
-import { Flags, Letters, Meal } from '@/helpers';
+import {
+  ButtonToken,
+  CurrentPage,
+  Flags,
+  GlobalToken,
+  InputToken,
+  ItemsPerPage,
+  Letters,
+  Meal,
+  PaginationToken,
+} from '@/helpers';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { HeartFilled, HeartTwoTone } from '@ant-design/icons';
 import { Button, ConfigProvider, Input, Pagination, Typography } from 'antd';
@@ -12,37 +22,6 @@ import '@ant-design/v5-patch-for-react-19';
 import useMealsStore from '../store/meals-store';
 
 const { Title, Text } = Typography;
-
-const InputToken = {
-  activeBorderColor: '#2d2013',
-  hoverBorderColor: '#d57d1f',
-};
-
-const ButtonToken = {
-  defaultActiveBorderColor: '#2d2013',
-  defaultActiveColor: '#2d2013',
-  defaultHoverBorderColor: '#d57d1f',
-  defaultHoverColor: '#d57d1f',
-};
-
-const PaginationToken = {
-  itemActiveBg: '#FFAB50',
-  itemBg: '#d57d1f',
-  itemActive: '#FFAB50',
-};
-
-const GlobalToken = {
-  colorPrimaryActive: '#2d2013',
-  colorPrimaryTextActive: '#ffffff',
-  colorPrimaryHover: '#d57d1f',
-  colorText: '#ffffff',
-  colorPrimary: '#2d2013',
-  colorBgTextActive: '#FFAB50',
-  colorTextDisabled: '#d57d1f',
-};
-
-const CurrentPage = 1;
-const ItemsPerPage = 8;
 
 export default function Home() {
   const meals = useMealsStore((state) => state.meals);

@@ -6,11 +6,7 @@ import { Button, Card, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import { Meal } from '../helpers/interface';
 import useMealsStore from '@/store/meals-store';
-
-const GlobalToken = {
-  paddingLG: 16,
-  borderRadiusLG: 0,
-};
+import { GlobalToken } from '@/helpers';
 
 interface RecipeCardInterface {
   meal: Meal;
