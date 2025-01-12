@@ -23,27 +23,40 @@ import useMealsStore from '../store/meals-store';
 
 const { Title, Text } = Typography;
 
+const usePagination = (data: Meal[], initialPage = CurrentPage, initialPageSize = ItemsPerPage) => {
+  const [page, setPage] = useState(initialPage);
+  const [itemsPerPage] = useState(initialPageSize);
+
+  return {
+    page: page,
+    pageItems: data.slice((page - 1) * itemsPerPage, page * itemsPerPage),
+    totalItems: data.length,
+    handlePageGange: setPage,
+  };
+};
+
 export default function Home() {
   const meals = useMealsStore((state) => state.meals);
   const fetchMeals = useMealsStore((state) => state.fetchMeals);
+  const removeMeal = useMealsStore((state) => state.removeMeal);
 
   useEffect(() => {
     return fetchMeals(mockMeals);
   }, [fetchMeals]);
 
-  const mealsSlice = meals.slice((CurrentPage - 1) * ItemsPerPage, CurrentPage * ItemsPerPage);
+  const { page, pageItems, totalItems, handlePageGange } = usePagination(meals);
 
   const [isFavoriteFiltered, setIsFavoriteFiltered] = useState(false);
-  const [currentItemsOnPage, setCurrentItemsOnPage] = useState<Meal[]>(mealsSlice);
 
-  function clickFavoriteFilterButtonHandler() {
+  function handleClickFavoriteFilterButton() {
     setIsFavoriteFiltered(!isFavoriteFiltered);
   }
 
-  function onChangePageHandler(currentPage: number) {
-    setCurrentItemsOnPage(
-      meals.slice((currentPage - 1) * ItemsPerPage, currentPage * ItemsPerPage)
-    );
+  function handleClickCloseButton(idMeal: string) {
+    removeMeal(idMeal);
+    if (page - Math.ceil((meals.length - 1) / ItemsPerPage) === 1) {
+      handlePageGange(page - 1);
+    }
   }
 
   return (
@@ -151,12 +164,14 @@ export default function Home() {
                       <RecipeCard
                         key={meal.idMeal}
                         meal={meal}
+                        handleClickCloseButton={handleClickCloseButton}
                       />
                     ))
-                : currentItemsOnPage.map((meal) => (
+                : pageItems.map((meal) => (
                     <RecipeCard
                       key={meal.idMeal}
                       meal={meal}
+                      handleClickCloseButton={handleClickCloseButton}
                     />
                   ))}
             </div>
@@ -170,11 +185,15 @@ export default function Home() {
                 className='mb-6'
                 align='center'
                 defaultCurrent={1}
-                total={meals.length}
+                total={totalItems}
                 pageSize={ItemsPerPage}
                 showSizeChanger={false}
                 showTitle={false}
-                onChange={(currentPage) => onChangePageHandler(currentPage)}
+                // onChange={handlePageGange}
+                onChange={(page) => {
+                  console.log(page);
+                  handlePageGange(page);
+                }}
               />
             </ConfigProvider>
             <Image
@@ -208,7 +227,7 @@ export default function Home() {
                   />
                 )
               }
-              onClick={clickFavoriteFilterButtonHandler}
+              onClick={handleClickFavoriteFilterButton}
             />
           </div>
           <div className='w-[1170px] px-[15px] mx-auto text-center'>

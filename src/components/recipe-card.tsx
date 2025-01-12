@@ -10,20 +10,16 @@ import { GlobalToken } from '@/helpers';
 
 interface RecipeCardInterface {
   meal: Meal;
+  handleClickCloseButton: (idMeal: string) => void;
 }
 
-export default function RecipeCard({ meal }: RecipeCardInterface) {
+export default function RecipeCard({ meal, handleClickCloseButton }: RecipeCardInterface) {
   const meals = useMealsStore((state) => state.meals);
   const setFavoriteMeal = useMealsStore((state) => state.setFavoriteMeal);
-  const removeMeal = useMealsStore((state) => state.removeMeal);
 
   function clickFavoriteButtonHandler() {
     meals.filter((item) => item.idMeal === meal.idMeal)[0].isFavorite = !meal.isFavorite;
     setFavoriteMeal(meal);
-  }
-
-  function clickCloseButtonHandler() {
-    removeMeal(meal.idMeal);
   }
 
   return (
@@ -65,7 +61,7 @@ export default function RecipeCard({ meal }: RecipeCardInterface) {
                   key={'close'}
                 />
               }
-              onClick={clickCloseButtonHandler}
+              onClick={() => handleClickCloseButton(meal.idMeal)}
             />
           }
           cover={
