@@ -3,6 +3,7 @@
 import RecipeCard from '@/components/recipe-card';
 import {
   ButtonToken,
+  Countries,
   CurrentPage,
   Flags,
   GlobalToken,
@@ -47,10 +48,34 @@ export default function Home() {
   const { page, pageItems, totalItems, handlePageGange } = usePagination(meals);
 
   const [isFavoriteFiltered, setIsFavoriteFiltered] = useState(false);
+  const [isCountryFiltered, setIsCountryFiltered] = useState(false);
+  const [isLetterFiltered, setIsLetterFiltered] = useState(false);
+  const [letter, setLetter] = useState('');
+  const [country, setCountry] = useState('');
 
   function handleClickFavoriteFilterButton() {
     setIsFavoriteFiltered(!isFavoriteFiltered);
   }
+
+  function handleClickCountryFilterButton(flag: string) {
+    setIsCountryFiltered(!isCountryFiltered);
+    if (isCountryFiltered) {
+      setCountry(Countries[flag]);
+    } else {
+      setCountry('');
+    }
+  }
+
+  function handleClickLetterFilterButton(letter: string) {
+    setIsLetterFiltered(!isLetterFiltered);
+    if (isLetterFiltered) {
+      setLetter(letter);
+    } else {
+      setLetter('');
+    }
+  }
+
+  console.log(letter);
 
   function handleClickCloseButton(idMeal: string) {
     removeMeal(idMeal);
@@ -167,6 +192,26 @@ export default function Home() {
                         handleClickCloseButton={handleClickCloseButton}
                       />
                     ))
+                : isCountryFiltered
+                ? meals
+                    .filter((meal) => meal.strArea === country)
+                    .map((meal) => (
+                      <RecipeCard
+                        key={meal.idMeal}
+                        meal={meal}
+                        handleClickCloseButton={handleClickCloseButton}
+                      />
+                    ))
+                : isLetterFiltered
+                ? meals
+                    .filter((meal) => meal.strArea === country)
+                    .map((meal) => (
+                      <RecipeCard
+                        key={meal.idMeal}
+                        meal={meal}
+                        handleClickCloseButton={handleClickCloseButton}
+                      />
+                    ))
                 : pageItems.map((meal) => (
                     <RecipeCard
                       key={meal.idMeal}
@@ -239,13 +284,21 @@ export default function Home() {
             </Title>
             <div className='flex flex-wrap w-[1140px] gap-1 place-content-center mx-auto'>
               {Flags.map((flag) => (
-                <Image
-                  key={flag}
-                  src={`/flags/${flag}.png`}
-                  alt={`flag of ${flag}`}
-                  width={64}
-                  height={64}
-                />
+                <Fragment key={flag}>
+                  <Button
+                    className='w-auto h-auto p-0 border-none rounded-none bg-transparent'
+                    block={true}
+                    onClick={() => handleClickCountryFilterButton(flag)}
+                  >
+                    <Image
+                      key={flag}
+                      src={`/flags/${flag}.png`}
+                      alt={`flag of ${flag}`}
+                      width={64}
+                      height={64}
+                    />
+                  </Button>
+                </Fragment>
               ))}
             </div>
           </div>
@@ -263,6 +316,7 @@ export default function Home() {
                     <Button
                       className='bg-transparent border-none font-bold text-2xl text-[#d57d1f]'
                       shape='circle'
+                      onClick={() => handleClickLetterFilterButton(letter)}
                     >
                       {letter}
                     </Button>

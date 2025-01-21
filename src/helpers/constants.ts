@@ -64,7 +64,11 @@ export const Flags = [
   'UA',
 ];
 
-export const Countries = {
+interface ICountries {
+  [key: string]: string;
+}
+
+export const Countries: ICountries = {
   gb: 'British',
   us: 'American',
   fr: 'French',
