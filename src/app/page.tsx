@@ -3,7 +3,6 @@
 import RecipeCard from '@/components/recipe-card';
 import {
   ButtonToken,
-  Countries,
   CurrentPage,
   Flags,
   GlobalToken,
@@ -17,7 +16,7 @@ import { StyleProvider } from '@ant-design/cssinjs';
 import { HeartFilled, HeartTwoTone } from '@ant-design/icons';
 import { Button, ConfigProvider, Input, Pagination, Typography } from 'antd';
 import Image from 'next/image';
-import { Fragment, useEffect, useState } from 'react';
+import { ChangeEvent, Fragment, useEffect, useState } from 'react';
 import { mockMeals } from '../../mocks/mock-data-meals.json';
 import '@ant-design/v5-patch-for-react-19';
 import useMealsStore from '../store/meals-store';
@@ -48,40 +47,23 @@ export default function Home() {
   const { page, pageItems, totalItems, handlePageGange } = usePagination(meals);
 
   const [isFavoriteFiltered, setIsFavoriteFiltered] = useState(false);
-  const [isCountryFiltered, setIsCountryFiltered] = useState(false);
-  const [isLetterFiltered, setIsLetterFiltered] = useState(false);
-  const [letter, setLetter] = useState('');
-  const [country, setCountry] = useState('');
+  const [searchString, setSearchString] = useState('');
 
   function handleClickFavoriteFilterButton() {
     setIsFavoriteFiltered(!isFavoriteFiltered);
   }
-
-  function handleClickCountryFilterButton(flag: string) {
-    setIsCountryFiltered(!isCountryFiltered);
-    if (isCountryFiltered) {
-      setCountry(Countries[flag]);
-    } else {
-      setCountry('');
-    }
-  }
-
-  function handleClickLetterFilterButton(letter: string) {
-    setIsLetterFiltered(!isLetterFiltered);
-    if (isLetterFiltered) {
-      setLetter(letter);
-    } else {
-      setLetter('');
-    }
-  }
-
-  console.log(letter);
 
   function handleClickCloseButton(idMeal: string) {
     removeMeal(idMeal);
     if (page - Math.ceil((meals.length - 1) / ItemsPerPage) === 1) {
       handlePageGange(page - 1);
     }
+  }
+
+  function handleChangeSearch(evt: ChangeEvent<HTMLInputElement>) {
+    evt.preventDefault();
+    setSearchString(evt.target.value);
+    console.log(meals.filter((meal) => meal.strMeal.toLowerCase().includes(evt.target.value)));
   }
 
   return (
@@ -144,6 +126,8 @@ export default function Home() {
                   placeholder='Search for a Meal...'
                   allowClear
                   className='rounded-sm'
+                  value={searchString}
+                  onChange={handleChangeSearch}
                 />
               </ConfigProvider>
             </div>
@@ -183,28 +167,8 @@ export default function Home() {
           <div className='w-[1170px] px-[15px] mx-auto'>
             <div className='grid grid-cols-4 place-content-center gap-[30px]'>
               {isFavoriteFiltered
-                ? meals
+                ? pageItems
                     .filter((meal) => meal.isFavorite === true)
-                    .map((meal) => (
-                      <RecipeCard
-                        key={meal.idMeal}
-                        meal={meal}
-                        handleClickCloseButton={handleClickCloseButton}
-                      />
-                    ))
-                : isCountryFiltered
-                ? meals
-                    .filter((meal) => meal.strArea === country)
-                    .map((meal) => (
-                      <RecipeCard
-                        key={meal.idMeal}
-                        meal={meal}
-                        handleClickCloseButton={handleClickCloseButton}
-                      />
-                    ))
-                : isLetterFiltered
-                ? meals
-                    .filter((meal) => meal.strArea === country)
                     .map((meal) => (
                       <RecipeCard
                         key={meal.idMeal}
@@ -288,7 +252,6 @@ export default function Home() {
                   <Button
                     className='w-auto h-auto p-0 border-none rounded-none bg-transparent'
                     block={true}
-                    onClick={() => handleClickCountryFilterButton(flag)}
                   >
                     <Image
                       key={flag}
@@ -316,7 +279,6 @@ export default function Home() {
                     <Button
                       className='bg-transparent border-none font-bold text-2xl text-[#d57d1f]'
                       shape='circle'
-                      onClick={() => handleClickLetterFilterButton(letter)}
                     >
                       {letter}
                     </Button>

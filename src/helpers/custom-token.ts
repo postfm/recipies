@@ -1,6 +1,7 @@
 export const InputToken = {
   activeBorderColor: '#2d2013',
   hoverBorderColor: '#d57d1f',
+  colorText: '#2d2013',
 };
 
 export const ButtonToken = {
