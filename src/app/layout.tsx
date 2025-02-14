@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
-import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { Providers } from './providers';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${roboto.variable} antialiased`}>
-        <AntdRegistry>{children}</AntdRegistry>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
