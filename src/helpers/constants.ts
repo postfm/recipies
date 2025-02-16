@@ -62,6 +62,7 @@ export const Flags = [
   'pl',
   'ph',
   'UA',
+  'UY',
 ];
 
 interface ICountries {
@@ -103,4 +104,5 @@ export const Countries: ICountries = {
   pl: 'Polish',
   ph: 'Filipino',
   UA: 'Ukrainian',
+  UY: 'Uruguayan',
 };

@@ -8,6 +8,7 @@ import { mockMeals } from '../../mocks/mock-data-meals.json';
 import useMealsStore from '../store/meals-store';
 import { Button, Input } from '@heroui/react';
 import { HeartFilled, HeartTwoTone, SearchOutlined } from '@ant-design/icons';
+import Link from 'next/link';
 
 export default function Home() {
   const meals = useMealsStore((state) => state.meals);
@@ -165,7 +166,10 @@ export default function Home() {
           <div className='flex flex-wrap w-[1140px] gap-1 place-content-center mx-auto'>
             {Flags.map((flag) => (
               <Fragment key={flag}>
-                <Button className='w-auto h-auto p-0 border-none rounded-none bg-transparent'>
+                <Link
+                  className='w-auto h-auto p-0 border-none rounded-none bg-transparent'
+                  href=''
+                >
                   <Image
                     key={flag}
                     src={`/flags/${flag}.png`}
@@ -173,21 +177,24 @@ export default function Home() {
                     width={64}
                     height={64}
                   />
-                </Button>
+                </Link>
               </Fragment>
             ))}
           </div>
         </div>
-        <div className='w-[1170px] px-[15px] mx-auto text-center'>
+        <div className='w-[1170px] text-center'>
           <h3 className='text-white'>Browse By Name</h3>
           <h3>
             {Letters.map((letter) => {
               return (
                 <Fragment key={letter}>
-                  <Button className='bg-transparent border-none font-bold text-2xl text-[#d57d1f]'>
+                  <Link
+                    className='bg-transparent border-none text-xl text-[#d57d1f] w-auto'
+                    href=''
+                  >
                     {letter}
-                  </Button>
-                  {'Z' !== letter && <span className='text-white'>/</span>}
+                  </Link>
+                  {'Z' !== letter && <span className='text-white text-xl font-bold'>{' / '}</span>}
                 </Fragment>
               );
             })}
