@@ -3,11 +3,11 @@
 import RecipeCard from '@/components/recipe-card';
 import { Flags, Letters } from '@/helpers';
 import Image from 'next/image';
-import { ChangeEvent, Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { mockMeals } from '../../mocks/mock-data-meals.json';
 import useMealsStore from '../store/meals-store';
 import { Button, Input } from '@heroui/react';
-import { HeartFilled, HeartTwoTone } from '@ant-design/icons';
+import { HeartFilled, HeartTwoTone, SearchOutlined } from '@ant-design/icons';
 
 export default function Home() {
   const meals = useMealsStore((state) => state.meals);
@@ -19,7 +19,6 @@ export default function Home() {
   }, [fetchMeals]);
 
   const [isFavoriteFiltered, setIsFavoriteFiltered] = useState(false);
-  const [searchString, setSearchString] = useState('');
 
   function handleClickFavoriteFilterButton() {
     setIsFavoriteFiltered(!isFavoriteFiltered);
@@ -29,14 +28,8 @@ export default function Home() {
     removeMeal(idMeal);
   }
 
-  function handleChangeSearch(evt: ChangeEvent<HTMLInputElement>) {
-    evt.preventDefault();
-    setSearchString(evt.target.value);
-    console.log(meals.filter((meal) => meal.strMeal.toLowerCase().includes(evt.target.value)));
-  }
-
   return (
-    <div className='grid grid-rows-[75.2px_1fr_100px] items-center justify-items-center min-h-screen gap-16'>
+    <div className='text-inherit grid grid-rows-[75.2px_1fr_100px] items-center justify-items-center min-h-screen gap-16'>
       <header className='flex items-center w-full h-full pt-[15px] bg-[#23180d]'>
         <div className='w-[1170px] px-[15px] mx-auto'>
           <Image
@@ -82,36 +75,43 @@ export default function Home() {
             <Input
               isClearable
               placeholder='Search for a Meal...'
-              className='rounded-sm'
-              value={searchString}
-              onChange={handleChangeSearch}
+              className='w-[348px] h-[50px]'
+              radius='sm'
+              startContent={<SearchOutlined />}
+              type='search'
             />
           </div>
-          <div className='w-max mx-auto mb-6'>
+          <div className='w-max mx-auto mb-6 text-white'>
             <Image
               src='/meal-icon6.png'
               alt='Total Meal Icon'
               width={16}
               height={16}
-              className='inline-block'
+              className='inline-block mr-1'
             />
-            <b className='mr-[10px]'>Total Meals: 303</b>
+            <b className='mr-[10px]'>
+              Total Meals: <span className='font-light'>303</span>
+            </b>
             <Image
               src='/meal-icon4.png'
               alt='Total Meal Icon'
               width={16}
               height={16}
-              className='inline-block'
+              className='inline-block mr-1'
             />
-            <b className='mr-[10px]'>Total Ingredients: 575</b>
+            <b className='mr-[10px]'>
+              Total Ingredients: <span className='font-light'>575</span>
+            </b>
             <Image
               src='/image2.png'
               alt='Total Meal Icon'
               width={16}
               height={16}
-              className='inline-block'
+              className='inline-block mr-1'
             />
-            <b>Images: 303</b>
+            <b>
+              Images: <span className='font-light'>303</span>
+            </b>
           </div>
           <Image
             src='/separator.jpg'

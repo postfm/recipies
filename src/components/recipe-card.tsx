@@ -22,48 +22,48 @@ export default function RecipeCard({ meal, handleClickCloseButton }: RecipeCardI
 
   return (
     <Card className='recipe-card w-full max-w-[250px] pl-0 mb-6 border-[1.1px] border-[#23180d] bg-[#23180d] text-[#d57d1f]  rounded-none'>
-      <CardHeader>
+      <CardHeader className='justify-between absolute rounded-none z-10 bg-black/60 p-1'>
+        <Button
+          isIconOnly
+          className='bg-transparent border-none'
+          onPress={clickFavoriteButtonHandler}
+        >
+          {meal.isFavorite ? (
+            <HeartFilled
+              className='text-[#d57d1f] hover:text-[#FFAB50] text-2xl hover:cursor-pointer'
+              key={'favorite'}
+            />
+          ) : (
+            <HeartOutlined
+              className='text-[#d57d1f] hover:text-[#FFAB50] text-2xl hover:cursor-pointer'
+              key={'favorite'}
+            />
+          )}
+        </Button>
         <Button
           isIconOnly
           className='bg-transparent border-none'
           onPress={() => handleClickCloseButton(meal.idMeal)}
         >
           <CloseOutlined
-            className='text-[#d57d1f] hover:text-[#FFAB50] text-3xl hover:cursor-pointer'
+            className='text-[#d57d1f] hover:text-[#FFAB50] text-2xl hover:cursor-pointer'
             key={'close'}
           />
         </Button>
-        <Button
-          className='bg-transparent border-none'
-          onPress={clickFavoriteButtonHandler}
-        >
-          {meal.isFavorite ? (
-            <HeartFilled
-              className='text-[#d57d1f] hover:text-[#FFAB50] text-3xl hover:cursor-pointer'
-              key={'favorite'}
-            />
-          ) : (
-            <HeartOutlined
-              className='text-[#d57d1f] hover:text-[#FFAB50] text-3xl hover:cursor-pointer'
-              key={'favorite'}
-            />
-          )}
-        </Button>
       </CardHeader>
-      <CardBody>
-        <Image
-          src={meal.strMealThumb}
-          alt='ui/ux review check'
-          width={250}
-          height={250}
-        />
-        <p
-          className='!color-[#d57d1f] !hover:text-[#FFAB50] text-sm hover:text-[#FFAB50] hover:cursor-pointer'
-          onClick={() => alert(`Go to recipe ${meal.idMeal} page`)}
-        >
-          {meal.strMeal}
-        </p>
-      </CardBody>
+      <div onClick={() => alert(`Go to recipe ${meal.idMeal} page`)}>
+        <CardBody className='p-0 hover:cursor-pointer'>
+          <Image
+            src={meal.strMealThumb}
+            alt='ui/ux review check'
+            width={250}
+            height={250}
+          />
+          <p className='!color-[#d57d1f] !hover:text-[#FFAB50] text-sm hover:text-[#FFAB50] hover:cursor-pointer text-center'>
+            {meal.strMeal}
+          </p>
+        </CardBody>
+      </div>
     </Card>
   );
 }
