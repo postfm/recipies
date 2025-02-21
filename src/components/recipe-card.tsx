@@ -30,12 +30,12 @@ export default function RecipeCard({ meal, handleClickCloseButton }: RecipeCardI
         >
           {meal.isFavorite ? (
             <HeartFilled
-              className='text-[#d57d1f] hover:text-[#FFAB50] text-2xl hover:cursor-pointer'
+              className='text-[#d57d1f] hover:text-[#FFAB50] text-xl hover:cursor-pointer'
               key={'favorite'}
             />
           ) : (
             <HeartOutlined
-              className='text-[#d57d1f] hover:text-[#FFAB50] text-2xl hover:cursor-pointer'
+              className='text-[#d57d1f] hover:text-[#FFAB50] text-xl hover:cursor-pointer'
               key={'favorite'}
             />
           )}
@@ -46,22 +46,20 @@ export default function RecipeCard({ meal, handleClickCloseButton }: RecipeCardI
           onPress={() => handleClickCloseButton(meal.idMeal)}
         >
           <CloseOutlined
-            className='text-[#d57d1f] hover:text-[#FFAB50] text-2xl hover:cursor-pointer'
+            className='text-[#d57d1f] hover:text-[#FFAB50] text-xl hover:cursor-pointer'
             key={'close'}
           />
         </Button>
       </CardHeader>
       <div onClick={() => alert(`Go to recipe ${meal.idMeal} page`)}>
-        <CardBody className='p-0 hover:cursor-pointer'>
+        <CardBody className='p-0 hover:cursor-pointer hover:text-[#FFAB50]'>
           <Image
             src={meal.strMealThumb}
             alt='ui/ux review check'
             width={250}
             height={250}
           />
-          <p className='!color-[#d57d1f] !hover:text-[#FFAB50] text-sm hover:text-[#FFAB50] hover:cursor-pointer text-center'>
-            {meal.strMeal}
-          </p>
+          <p className='!color-[#d57d1f] text-sm text-center'>{meal.strMeal}</p>
         </CardBody>
       </div>
     </Card>

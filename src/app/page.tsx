@@ -15,11 +15,12 @@ export default function Home() {
   const fetchMeals = useMealsStore((state) => state.fetchMeals);
   const removeMeal = useMealsStore((state) => state.removeMeal);
 
+  const [searchMeals, setSearchMeals] = useState('');
+  const [isFavoriteFiltered, setIsFavoriteFiltered] = useState(false);
+
   useEffect(() => {
     return fetchMeals(mockMeals);
   }, [fetchMeals]);
-
-  const [isFavoriteFiltered, setIsFavoriteFiltered] = useState(false);
 
   function handleClickFavoriteFilterButton() {
     setIsFavoriteFiltered(!isFavoriteFiltered);
@@ -28,6 +29,15 @@ export default function Home() {
   function handleClickCloseButton(idMeal: string) {
     removeMeal(idMeal);
   }
+
+  const FilteredRecepies = isFavoriteFiltered
+    ? meals.filter((meal) => {
+        return (
+          meal.strMeal.toLowerCase().includes(searchMeals.toLowerCase()) &&
+          meal.isFavorite === isFavoriteFiltered
+        );
+      })
+    : meals.filter((meal) => meal.strMeal.toLowerCase().includes(searchMeals.toLowerCase()));
 
   return (
     <div className='text-inherit grid grid-rows-[75.2px_1fr_100px] items-center justify-items-center min-h-screen gap-16'>
@@ -80,6 +90,8 @@ export default function Home() {
               radius='sm'
               startContent={<SearchOutlined />}
               type='search'
+              onChange={(evt) => setSearchMeals(evt.target.value)}
+              onClear={() => setSearchMeals('')}
             />
           </div>
           <div className='w-max mx-auto mb-6 text-white'>
@@ -123,7 +135,7 @@ export default function Home() {
         </div>
         <div className='w-[1170px] px-[15px] mx-auto'>
           <div className='grid grid-cols-4 place-content-center gap-[30px]'>
-            {meals.map((meal) => (
+            {FilteredRecepies.map((meal) => (
               <RecipeCard
                 key={meal.idMeal}
                 meal={meal}
