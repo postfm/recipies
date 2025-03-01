@@ -1,12 +1,12 @@
 'use client';
 
 import RecipeCard from '@/components/recipe-card';
-import { Flags, Letters } from '@/helpers';
+import { CARDS_PER_PAGE, Flags, INITIAL_PAGE, Letters } from '@/helpers';
 import Image from 'next/image';
 import { Fragment, useEffect, useState } from 'react';
 import { mockMeals } from '../../mocks/mock-data-meals.json';
 import useMealsStore from '../store/meals-store';
-import { Button, Input } from '@heroui/react';
+import { Button, Input, Pagination } from '@heroui/react';
 import { HeartFilled, HeartTwoTone, SearchOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 
@@ -17,6 +17,9 @@ export default function Home() {
 
   const [searchMeals, setSearchMeals] = useState('');
   const [isFavoriteFiltered, setIsFavoriteFiltered] = useState(false);
+  const [currentPage, setCurrentPage] = useState(INITIAL_PAGE);
+
+  const totalPage = Math.ceil(meals.length / CARDS_PER_PAGE);
 
   useEffect(() => {
     return fetchMeals(mockMeals);
@@ -30,14 +33,16 @@ export default function Home() {
     removeMeal(idMeal);
   }
 
-  const FilteredRecepies = isFavoriteFiltered
-    ? meals.filter((meal) => {
-        return (
-          meal.strMeal.toLowerCase().includes(searchMeals.toLowerCase()) &&
-          meal.isFavorite === isFavoriteFiltered
-        );
-      })
-    : meals.filter((meal) => meal.strMeal.toLowerCase().includes(searchMeals.toLowerCase()));
+  const FilteredRecepies = (
+    isFavoriteFiltered
+      ? meals.filter((meal) => {
+          return (
+            meal.strMeal.toLowerCase().includes(searchMeals.toLowerCase()) &&
+            meal.isFavorite === isFavoriteFiltered
+          );
+        })
+      : meals.filter((meal) => meal.strMeal.toLowerCase().includes(searchMeals.toLowerCase()))
+  ).slice((currentPage - 1) * CARDS_PER_PAGE, currentPage * CARDS_PER_PAGE);
 
   return (
     <div className='text-inherit grid grid-rows-[75.2px_1fr_100px] items-center justify-items-center min-h-screen gap-16'>
@@ -143,6 +148,12 @@ export default function Home() {
               />
             ))}
           </div>
+          <Pagination
+            showControls
+            page={currentPage}
+            total={totalPage}
+            onChange={setCurrentPage}
+          />
           <Image
             src='/separator.jpg'
             alt='Separator'
