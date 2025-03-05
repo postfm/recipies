@@ -1,7 +1,7 @@
 'use client';
 
 import RecipeCard from '@/components/recipe-card';
-import { CARDS_PER_PAGE, Flags, INITIAL_PAGE, Letters } from '@/helpers';
+import { CARDS_PER_PAGE, Countries, Flags, Letters } from '@/helpers';
 import Image from 'next/image';
 import { Fragment, useEffect, useState } from 'react';
 import { mockMeals } from '../../mocks/mock-data-meals.json';
@@ -11,18 +11,16 @@ import { HeartFilled, HeartTwoTone, SearchOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 
 export default function Home() {
-  const meals = useMealsStore((state) => state.meals);
-  const fetchMeals = useMealsStore((state) => state.fetchMeals);
-  const removeMeal = useMealsStore((state) => state.removeMeal);
+  const { meals, currentPage, fetchMeals, removeMeal, setCurrentPage } = useMealsStore();
 
   const [searchMeals, setSearchMeals] = useState('');
   const [isFavoriteFiltered, setIsFavoriteFiltered] = useState(false);
-  const [currentPage, setCurrentPage] = useState(INITIAL_PAGE);
-
-  const totalPage = Math.ceil(meals.length / CARDS_PER_PAGE);
+  const [letterFiltered, setLetterFiltered] = useState('');
+  const [countryFiltered, setCountryFiltered] = useState('');
 
   useEffect(() => {
-    return fetchMeals(mockMeals);
+    const fetchData = async () => fetchMeals(mockMeals);
+    fetchData();
   }, [fetchMeals]);
 
   function handleClickFavoriteFilterButton() {
@@ -33,27 +31,61 @@ export default function Home() {
     removeMeal(idMeal);
   }
 
-  const FilteredRecepies = (
-    isFavoriteFiltered
-      ? meals.filter((meal) => {
-          return (
-            meal.strMeal.toLowerCase().includes(searchMeals.toLowerCase()) &&
-            meal.isFavorite === isFavoriteFiltered
-          );
-        })
-      : meals.filter((meal) => meal.strMeal.toLowerCase().includes(searchMeals.toLowerCase()))
-  ).slice((currentPage - 1) * CARDS_PER_PAGE, currentPage * CARDS_PER_PAGE);
+  function handleClickLetterButton(evt: React.MouseEvent<HTMLDivElement>) {
+    evt.preventDefault();
+    const target = evt.target as HTMLElement;
+    setLetterFiltered(target.innerText);
+  }
+
+  function handleClickCountryButton(evt: React.MouseEvent<HTMLDivElement>) {
+    evt.preventDefault();
+    const target = evt.target as HTMLElement;
+    const img = target as HTMLImageElement;
+    setCountryFiltered(img.alt);
+  }
+
+  function handleClickClearButton() {
+    setSearchMeals('');
+    setIsFavoriteFiltered(false);
+    setLetterFiltered('');
+    setCountryFiltered('');
+  }
+
+  // Фильтрация и поиск
+  const FilteredRecepies = meals.filter((meal) => {
+    const matchesSearch = meal.strMeal.toLowerCase().includes(searchMeals.toLowerCase());
+    const matchesFavorite = isFavoriteFiltered ? meal.isFavorite === isFavoriteFiltered : true;
+    const matchesLetter = letterFiltered
+      ? meal.strMeal[0].toLowerCase() === letterFiltered.toLowerCase()
+      : true;
+    const matchesCountry = countryFiltered
+      ? meal.strArea.toLowerCase() === countryFiltered.toLowerCase()
+      : true;
+    return matchesSearch && matchesFavorite && matchesLetter && matchesCountry;
+  });
+
+  const totalPage = Math.ceil(FilteredRecepies.length / CARDS_PER_PAGE);
+  const paginatedItems = FilteredRecepies.slice(
+    (currentPage - 1) * CARDS_PER_PAGE,
+    currentPage * CARDS_PER_PAGE
+  );
 
   return (
     <div className='text-inherit grid grid-rows-[75.2px_1fr_100px] items-center justify-items-center min-h-screen gap-16'>
       <header className='flex items-center w-full h-full pt-[15px] bg-[#23180d]'>
-        <div className='w-[1170px] px-[15px] mx-auto'>
+        <div className='flex justify-between w-[1170px] px-[15px] mx-auto'>
           <Image
             src='/logo-small.png'
             alt='Logo'
             width={296}
             height={41}
           />
+          <Button
+            className='bg-[#d57d1f]'
+            onPress={handleClickClearButton}
+          >
+            Clear Filters
+          </Button>
         </div>
       </header>
       <main className='flex flex-col gap-8 row-start-2 items-center sm:items-start'>
@@ -140,7 +172,7 @@ export default function Home() {
         </div>
         <div className='w-[1170px] px-[15px] mx-auto'>
           <div className='grid grid-cols-4 place-content-center gap-[30px]'>
-            {FilteredRecepies.map((meal) => (
+            {paginatedItems.map((meal) => (
               <RecipeCard
                 key={meal.idMeal}
                 meal={meal}
@@ -148,12 +180,15 @@ export default function Home() {
               />
             ))}
           </div>
-          <Pagination
-            showControls
-            page={currentPage}
-            total={totalPage}
-            onChange={setCurrentPage}
-          />
+          <div className='justify-self-center mb-4'>
+            <Pagination
+              showControls
+              page={currentPage}
+              total={totalPage}
+              onChange={setCurrentPage}
+              color='warning'
+            />
+          </div>
           <Image
             src='/separator.jpg'
             alt='Separator'
@@ -186,7 +221,10 @@ export default function Home() {
         </div>
         <div className='w-[1170px] px-[15px] mx-auto text-center'>
           <h3 className='text-white'>Browse Country</h3>
-          <div className='flex flex-wrap w-[1140px] gap-1 place-content-center mx-auto'>
+          <div
+            className='flex flex-wrap w-[1140px] gap-1 place-content-center mx-auto'
+            onClick={handleClickCountryButton}
+          >
             {Flags.map((flag) => (
               <Fragment key={flag}>
                 <Link
@@ -194,9 +232,8 @@ export default function Home() {
                   href=''
                 >
                   <Image
-                    key={flag}
                     src={`/flags/${flag}.png`}
-                    alt={`flag of ${flag}`}
+                    alt={Countries[flag]}
                     width={64}
                     height={64}
                   />
@@ -210,7 +247,11 @@ export default function Home() {
           <h3>
             {Letters.map((letter) => {
               return (
-                <Fragment key={letter}>
+                <div
+                  className='inline'
+                  key={letter}
+                  onClick={handleClickLetterButton}
+                >
                   <Link
                     className='bg-transparent border-none text-xl text-[#d57d1f] w-auto'
                     href=''
@@ -218,7 +259,7 @@ export default function Home() {
                     {letter}
                   </Link>
                   {'Z' !== letter && <span className='text-white text-xl font-bold'>{' / '}</span>}
-                </Fragment>
+                </div>
               );
             })}
           </h3>

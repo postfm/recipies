@@ -1,18 +1,24 @@
 import { Meal } from './../helpers/interface';
 import { create } from 'zustand';
 import { faker } from '@faker-js/faker';
+import { INITIAL_PAGE } from '@/helpers';
 
 interface MealsState {
   meals: Meal[];
+  currentPage: number;
+  fetchMeals: (data: Meal[]) => void;
   addMeal: (meal: Meal) => void;
   setFavoriteMeal: (meal: Meal) => void;
   removeMeal: (id: string) => void;
   removeAllMeals: (meals: MealsState) => void;
-  fetchMeals: (data: Meal[]) => void;
+  setCurrentPage: (page: number) => void;
 }
 
 const useMealsStore = create<MealsState>((set) => ({
   meals: [],
+  searchQuery: '',
+  filterCategory: '',
+  currentPage: INITIAL_PAGE,
 
   addMeal: (meal) =>
     set((state) => ({
@@ -40,6 +46,8 @@ const useMealsStore = create<MealsState>((set) => ({
     });
     set({ meals: data });
   },
+
+  setCurrentPage: (page) => set({ currentPage: page }),
 }));
 
 export default useMealsStore;

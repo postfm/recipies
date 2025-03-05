@@ -12,8 +12,7 @@ interface RecipeCardInterface {
 }
 
 export default function RecipeCard({ meal, handleClickCloseButton }: RecipeCardInterface) {
-  const meals = useMealsStore((state) => state.meals);
-  const setFavoriteMeal = useMealsStore((state) => state.setFavoriteMeal);
+  const { meals, setFavoriteMeal } = useMealsStore();
 
   function clickFavoriteButtonHandler() {
     meals.filter((item) => item.idMeal === meal.idMeal)[0].isFavorite = !meal.isFavorite;
@@ -58,6 +57,7 @@ export default function RecipeCard({ meal, handleClickCloseButton }: RecipeCardI
             alt='ui/ux review check'
             width={250}
             height={250}
+            priority={true}
           />
           <p className='!color-[#d57d1f] text-sm text-center'>{meal.strMeal}</p>
         </CardBody>
