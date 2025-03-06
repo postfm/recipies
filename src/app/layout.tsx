@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
+import Header from '@/components/header';
+import Footer from '@/components/footer';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -25,7 +27,11 @@ export default function RootLayout({
       className={`${roboto.className} antialiased`}
     >
       <body>
-        <Providers>{children}</Providers>
+        <div className='text-inherit grid grid-rows-[75.2px_1fr_100px] items-center justify-items-center min-h-screen gap-16'>
+          <Header />
+          <Providers>{children}</Providers>
+          <Footer />
+        </div>
       </body>
     </html>
   );
